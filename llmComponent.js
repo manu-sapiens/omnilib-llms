@@ -41,8 +41,8 @@ function createLlmQueryComponent(model_provider, links, payloadParser)
 
     const group_id = model_provider;
     const id = `llm_query`;
-    const title = `The Real LLM Query: ${model_provider}`;
-    const category = 'Text Manipulation';
+    const title = `LLM Query via ${model_provider}`;
+    const category = 'LLM';
     const description = `Query a LLM with ${model_provider}`;
     const summary = `Query the specified LLM via ${model_provider}`;
     const inputs = get_llm_query_inputs();
