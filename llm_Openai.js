@@ -2,8 +2,8 @@
 //llmOpenai.js
 import { runBlock } from 'omnilib-utils/blocks.js';
 import { Llm, fixJsonString, generateModelId, deduceLlmTitle, deduceLlmDescription} from './llm.js'
-import { is_valid, console_log, clean_string, pauseForSeconds } from 'omnilib-utils/utils.js';
-import { Tokenizer_Openai } from 'omnilib-docs/tokenizer_Openai.js'
+import { is_valid, clean_string } from 'omnilib-utils/utils.js';
+import { Tokenizer_Openai } from './tokenizer_Openai.js';
 
 const LLM_PROVIDER_OPENAI_SERVER = "openai"; // we may need to support Azure and other providers (e.g. Poe)
 const LLM_MODEL_TYPE_OPENAI = "openai";

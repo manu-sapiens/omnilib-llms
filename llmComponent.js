@@ -1,6 +1,6 @@
 //@ts-check
 import { createComponent } from 'omnilib-utils/component.js';
-import { getModelNameAndProviderFromId } from 'omnilib-llms/llm.js';
+import { getModelNameAndProviderFromId } from './llm.js';
 
 function get_llm_query_inputs(default_llm = "")
 {

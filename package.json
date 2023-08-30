@@ -2,6 +2,7 @@
   "name": "omnilib-llms",
   "version": "1.0.0",
   "dependencies": {
-    "omnilib-utils": "https://github.com/manu-sapiens/omnilib-utils.git#main"
+    "omnilib-utils": "https://github.com/manu-sapiens/omnilib-utils.git#main",
+    "gpt-tokenizer": "^2.1.1"
   }
 }

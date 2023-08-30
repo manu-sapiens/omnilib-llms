@@ -1,6 +1,6 @@
 //@ts-check
 //llms.js
-import { getModelNameAndProviderFromId, isProviderAvailable, DEFAULT_UNKNOWN_CONTEXT_SIZE } from './llm.js';
+import { getModelNameAndProviderFromId, DEFAULT_UNKNOWN_CONTEXT_SIZE } from './llm.js';
 import { Llm_Openai } from './llm_Openai.js'
 import { runBlock } from 'omnilib-utils/blocks.js';
 export const DEFAULT_LLM_MODEL_ID = 'gpt-3.5-turbo|openai'
@@ -36,8 +36,12 @@ export async function queryLlmByModelId(ctx, prompt, instruction, model_id, temp
     const splits = getModelNameAndProviderFromId(model_id);
     //const model_name = splits.model_name;
     const model_provider = splits.model_provider;
-
-    const block_name = `omni-extension-document_processing:${model_provider}.llm_query`;
+    let block_name = `omni-extension-document_processing:${model_provider}.llm_query`;
+    
+    if (model_provider == "openai")
+    {
+        block_name = `omni-core-llms:${model_provider}.llm_query`;
+    }
     const block_args = { prompt, instruction, model_id, temperature, args };
     const response = await runBlock(ctx, block_name, block_args);
     return response;

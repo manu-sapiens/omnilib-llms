@@ -1,7 +1,9 @@
 //@ts-check
 // llm.js
-import path from "path";
+
+//@ts-ignore
 import { omnilog } from 'mercs_shared';
+import path from "path";
 import { walkDirForExtension, validateDirectoryExists, validateFileExists, readJsonFromDisk, fetchJsonFromUrl } from 'omnilib-utils/files.js';
 import { is_valid, console_log, pauseForSeconds } from 'omnilib-utils/utils.js';
 
