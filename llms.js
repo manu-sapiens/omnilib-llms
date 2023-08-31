@@ -22,6 +22,19 @@ export async function getLlmChoices()
     return choices;
 }
 
+function getBlockName(model_id)
+{
+    const splits = getModelNameAndProviderFromId(model_id);
+    const model_name = splits.model_name;
+    const model_provider = splits.model_provider;
+    let block_name = `omni-extension-${model_provider}:${model_provider}.llm_query`;
+    if (model_provider == "openai")
+    {
+        block_name = `omni-core-llms:${model_provider}.llm_query`;
+    }
+    return block_name;
+}
+
 /**
  * @param {any} ctx
  * @param {any} prompt
@@ -33,20 +46,10 @@ export async function getLlmChoices()
  */
 export async function queryLlmByModelId(ctx, prompt, instruction, model_id, temperature = 0, args=null)
 {
-    const splits = getModelNameAndProviderFromId(model_id);
-    //const model_name = splits.model_name;
-    const model_provider = splits.model_provider;
-    let block_name = `omni-extension-document_processing:${model_provider}.llm_query`;
-    
-    if (model_provider == "openai")
-    {
-        block_name = `omni-core-llms:${model_provider}.llm_query`;
-    }
+    const block_name = getBlockName(model_id);
     const block_args = { prompt, instruction, model_id, temperature, args };
     const response = await runBlock(ctx, block_name, block_args);
     return response;
-    
-
 }
 
 export function getModelMaxSize(model_name, use_a_margin = true)
