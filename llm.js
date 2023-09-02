@@ -19,7 +19,6 @@ export function generateModelId(model_name, model_provider)
 export function getModelNameAndProviderFromId(model_id)
 {
     if (!model_id) throw new Error(`getModelNameAndProviderFromId: model_id is not valid: ${model_id}`);
-    debugger;
     const splits = model_id.split('|');
     if (splits.length != 2) throw new Error(`splitModelNameFromType: model_id is not valid: ${model_id}`);
     return { model_name: splits[0], model_provider: splits[1] };
