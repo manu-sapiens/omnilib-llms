@@ -1,18 +1,22 @@
 //@ts-check
 import { createComponent } from 'omnilib-utils/component.js';
 import { getModelNameAndProviderFromId } from './llm.js';
+import { getLlmChoices } from './llms.js';
 
-function get_llm_query_inputs(default_llm = "")
+export async function getLlmQueryInputs(use_openai_default = false)
 {
-    const input = [
-        { name: 'instruction', type: 'string', description: 'Instruction(s)', defaultValue: 'You are a helpful bot answering the user with their question to the best of your abilities', customSocket: 'text' },
-        { name: 'prompt', type: 'string', customSocket: 'text', description: 'Prompt(s)' },
-        { name: 'temperature', type: 'number', defaultValue: 0.7, minimum: 0, maximum:2, description: "The randomness regulator, higher for more creativity, lower for more structured, predictable text."},
-    ];   
 
-    if (default_llm != "")
+    const input = [];
+
+    input.push({ name: 'instruction', type: 'string', description: 'Instruction(s)', defaultValue: 'You are a helpful bot answering the user with their question to the best of your abilities', customSocket: 'text' } );
+    input.push({ name: 'prompt', type: 'string', customSocket: 'text', description: 'Prompt(s)' });
+    input.push({ name: 'temperature', type: 'number', defaultValue: 0.7, minimum: 0, maximum:2, description: "The randomness regulator, higher for more creativity, lower for more structured, predictable text."});
+   
+    if (use_openai_default)
     {
-        input.push({ name: 'model_id', type: 'string', customSocket: 'text', defaultValue: default_llm, description: 'The provider of the LLM model to use'});
+        const llm_choices = await getLlmChoices();
+        const model_id_input = { name: 'model_id', title: 'model', type: 'string', defaultValue: 'gpt-3.5-turbo-16k|openai', choices: llm_choices , customSocket: 'text'};
+        input.push(model_id_input);
     }
     else
     {
@@ -24,19 +28,19 @@ function get_llm_query_inputs(default_llm = "")
     return input;
 }
 
-const LLM_QUERY_OUTPUT = [
+export const LLM_QUERY_OUTPUT = [
     { name: 'answer_text', type: 'string', customSocket: 'text', description: 'The answer to the query', title: "Answer"},
     { name: 'answer_json', type: 'object', customSocket: 'object', description: 'The answer in json format, with possibly extra arguments returned by the LLM', title: 'Json' },
 ]
 
-const LLM_QUERY_CONTROL = null;
+export const LLM_QUERY_CONTROL = null;
 // TBD: use controls for temperature (slider) and args (json editer/viewer)
 //[
     // { name: "temperature", placeholder: "AlpineNumWithSliderComponent" },];
     // { name: "args", title: "Extra args", placeholder: "AlpineCodeMirrorComponent", description: "Extra Args passed to the LLM model" },
 //];
 
-function createLlmQueryComponent(model_provider, links, payloadParser)
+export async function async_getLlmQueryComponent(model_provider, links, payloadParser, use_openai_default = false)
 {
 
     const group_id = model_provider;
@@ -45,7 +49,7 @@ function createLlmQueryComponent(model_provider, links, payloadParser)
     const category = 'LLM';
     const description = `Query a LLM with ${model_provider}`;
     const summary = `Query the specified LLM via ${model_provider}`;
-    const inputs = get_llm_query_inputs();
+    const inputs = await getLlmQueryInputs(use_openai_default);
     const outputs = LLM_QUERY_OUTPUT;
     const controls = LLM_QUERY_CONTROL;
 
@@ -54,21 +58,14 @@ function createLlmQueryComponent(model_provider, links, payloadParser)
 }
 
 
-function extractPayload(payload, model_provider) {
+export function extractLlmQueryPayload(payload, model_provider) {
     if (!payload) throw new Error('No payload provided.');
 
-    let args = payload.args;
-    if (!args || args == undefined) args = {};
-
-    let instruction = null;
-    let prompt = null;
-    let temperature = null;
-    let model_id = null;
-
-    if ('instruction' in args == false) instruction = payload.instruction;
-    if ('prompt' in args == false) prompt = payload.prompt;
-    if ('temperature' in args == false) temperature = payload.temperature || 0;
-    if ('model_id' in args == false) model_id = payload.model_id;
+    const instruction = payload.instruction;
+    const prompt = payload.prompt;
+    const temperature = payload.temperature || 0;
+    const model_id = payload.model_id;
+    const args = payload.args;
 
     if (!prompt) throw new Error(`ERROR: no prompt provided!`);
 
@@ -78,7 +75,6 @@ function extractPayload(payload, model_provider) {
 
     if (passed_provider != model_provider) throw new Error(`ERROR: model_provider (${passed_provider}) != ${model_provider}`);
 
-
     return {
         instruction,
         prompt,
@@ -87,7 +83,3 @@ function extractPayload(payload, model_provider) {
         args
     };
 }
-
-
-
-export { createLlmQueryComponent, extractPayload, get_llm_query_inputs, LLM_QUERY_OUTPUT, LLM_QUERY_CONTROL };
