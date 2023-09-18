@@ -2,7 +2,6 @@
 // llm.js
 
 //@ts-ignore
-import { omnilog } from 'omni-shared';
 import path from "path";
 import { walkDirForExtension, validateDirectoryExists, validateFileExists, readJsonFromDisk, fetchJsonFromUrl } from 'omnilib-utils/files.js';
 import { is_valid, console_log, pauseForSeconds } from 'omnilib-utils/utils.js';
@@ -89,8 +88,6 @@ export async function getModelsDirJson()
 
     const models_dir_json =  await readJsonFromDisk(json_path);
 
-    //debug
-    omnilog.warn(`[getModelsDirJson] json_path = ${json_path}, models_dir_json = ${JSON.stringify(models_dir_json)}`)
     return models_dir_json;
 
 }
