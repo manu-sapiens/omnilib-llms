@@ -15,7 +15,7 @@ export async function getLlmQueryInputs(use_openai_default = false)
     if (use_openai_default)
     {
         const llm_choices = await getLlmChoices();
-        const model_id_input = { name: 'model_id', title: 'model', type: 'string', defaultValue: 'gpt-3.5-turbo-16k|openai', choices: llm_choices , customSocket: 'text'};
+        const model_id_input = { name: 'model_id', type: 'string', defaultValue: 'gpt-3.5-turbo-16k|openai', choices: llm_choices , customSocket: 'text'};
         input.push(model_id_input);
     }
     else
@@ -23,7 +23,7 @@ export async function getLlmQueryInputs(use_openai_default = false)
         input.push({ name: 'model_id', type: 'string', customSocket: 'text', description: 'The provider of the LLM model to use'});
     }
 
-    input.push({ name: 'args', type: 'object', customSocket: 'object', description: 'Extra arguments provided to the LLM'});
+    input.push({ name: 'args', title: 'Model Args', type: 'object', customSocket: 'object', description: 'Extra arguments provided to the LLM'});
 
     return input;
 }
